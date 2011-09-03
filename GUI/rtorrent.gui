@@ -1,0 +1,40 @@
+<gui>
+  <properties>
+    <project>rtorrent</project>
+    <designer>
+    </designer>
+    <size>
+      <portrait width="320" height="480" />
+      <landscape width="480" height="320" />
+    </size>
+    <imagefolder>
+    </imagefolder>
+    <debug loaderrors="0" connectionerrors="0" />
+  </properties>
+  <systems>
+    <system name="rTorrent" ip="192.168.0.250" port="5000" protocol="tcp" alwayson="1" accept="0" acceptBroadcasts="0" ssl="0" maxconnections="0" heartbeatRx="" heartbeatTx="" heartbeatMode="-1" eom="" connectionStatus="0" disconnectionStatus="0">
+      <fb name="rTorrent_Incoming" regex="." />
+    </system>
+  </systems>
+  <themes>
+    <theme type="button" name=".cfblue2_bottom[state='0']"><![CDATA[padding: 0px 19px 0px 19px; -webkit-border-image: url(bottom_btn_off.png) 0 19 0 19; text-shadow: rgba(0,0,0,0.78) 0px -1px 0px; color: White; font-size: 18px; font-family: 'Futura'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".cfblue2_bottom[state='1']"><![CDATA[padding: 0px 19px 0px 19px; -webkit-border-image: url(bottom_btn_on.png) 0 19 0 19; text-shadow: rgba(0,0,0,0.78) 0px -1px 0px; color: White; font-size: 18px; font-family: 'Futura'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+  </themes>
+  <scripts>
+    <script name="rtorrent.js" />
+    <script name="xmlrpc.js" />
+  </scripts>
+  <page name="Startup" j="0" transition="" subtype="" time="0" ease="">
+    <portrait />
+    <landscape>
+      <btn j="0" x="6" y="11" w="144" h="44" t="cfblue2_bottom" flip="None" sim="1" l="0" s="1" js="rTorrent.listMethods()">
+        <inactive s="0">List Methods</inactive>
+        <active s="0">List Methods</active>
+      </btn>
+      <btn j="0" x="316" y="11" w="144" h="44" t="cfblue2_bottom" flip="None" sim="1" l="0" s="1" js="rTorrent.listTorrents()">
+        <inactive s="0">List Torrents</inactive>
+        <active s="0">List Torrents</active>
+      </btn>
+    </landscape>
+  </page>
+</gui>

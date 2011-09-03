@@ -1,0 +1,52 @@
+Below is a sample of a response from rTorrent when requesting a list of torrents:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<methodResponse>
+<params>
+	<param><value><array><data>
+		<value><array><data>
+			<value><string>22B620D9355D870568AC63CDDE8317CB1681AD7E</string></value>
+			<value><string>ubuntu-11.10-beta1-desktop-i386.iso</string></value>
+			<value><i8>0</i8></value>
+			<value><i8>46137344</i8></value>
+			<value><i8>729067520</i8></value>
+			<value><i8>682930176</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>1</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>57786368</i8></value>
+			<value><i8>1114112</i8></value>
+			<value><i8>1314893665</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>19</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+		</data></array></value>
+		<value><array><data>
+			<value><string>A70973FBCB485A25D22C6676FB8A1C9AD2ABD0CF</string></value>
+			<value><string>dsl-4.4.10</string></value>
+			<value><i8>0</i8></value>
+			<value><i8>1179648</i8></value>
+			<value><i8>52328868</i8></value>
+			<value><i8>51149220</i8></value>
+			<value><i8>32910</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>1900544</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>1248621006</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>0</i8></value>
+			<value><i8>1</i8></value>
+		</data></array></value>
+	</data></array></value>
+</param>
+</params>
+</methodResponse>
