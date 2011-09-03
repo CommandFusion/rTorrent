@@ -15,6 +15,17 @@ HELP:
 =========================================================================
 */
 
+function round(n,dec) {
+	n = parseFloat(n);
+	if(!isNaN(n)){
+		if(!dec) var dec= 0;
+		var factor= Math.pow(10,dec);
+		return Math.floor(n*factor+((n*factor*10)%10>=5?1:0))/factor;
+	}else{
+		return n;
+	}
+}
+
 // ======================================================================
 // Global Object
 // ======================================================================
@@ -46,9 +57,43 @@ var CFrTorrent = function(params) {
 		this.bytesDone = 0;
 		this.upTotal = 0;			// Total bytes uploaded
 		this.creationDate = 0;		// Date the torrent was created
-		this.complete = 0;			// 0 = incomplete, 1 = complete
+		this.isComplete = 0;		// 0 = incomplete, 1 = complete
 		this.ratio = 0;				// Download to Upload ratio for the torrent
 		this.isActive = 0;			// 0 = inactive, 1 = active
+	};
+
+	// Check if the torrent exists in the torrents array (each torrent has a unique hash)
+	self.getTorrent = function(hash) {
+		for (var i = 0, t; t = self.torrents[i]; i++) {
+			if (t.hash === hash) {
+				return t;
+			}
+		}  
+		return null;
+	};
+
+	// Sort torrents by their status, then their name
+	self.sortTorrents = function(a,b) {
+		CF.log(a.isComplete);
+		if (a.isComplete < b.isComplete) {
+			return -1;
+		} else if (a.isComplete > b.isComplete) {
+			return 1;
+		} else {
+			if (a.state < b.state) {
+				return -1;
+			} else if (a.state == b.state) {
+				return a.name.localeCompare(b.name);
+			}
+		}
+		return 1;
+	};
+
+	self.updateList = function() {
+		CF.listRemove("l1");
+		self.torrents.forEach (function(element, index, array) {
+			CF.listAdd("l1", [{"s1": element.name, "a1": (65535/element.bytesTotal)*element.bytesCompleted, "s2": round((100/element.bytesTotal)*element.bytesCompleted, 1) + "%"}]);
+		});
 	};
 
 	self.onIncomingData = function(theSystem, matchedString) {
@@ -67,32 +112,43 @@ var CFrTorrent = function(params) {
 
 			if (self.lastRequest == "listTorrents") {
 				var torrentNodes = xmlDoc.getElementsByTagName("data");
-				self.torrents = [];
+				var aTorrent = null;
 				for (var i = 1; i<torrentNodes.length; i++) {
-					var newTorrent = new Torrent();
-					newTorrent.hash				= torrentNodes[i].getElementsByTagName("string")[0].childNodes[0].nodeValue;
-					newTorrent.name				= torrentNodes[i].getElementsByTagName("string")[1].childNodes[0].nodeValue;
-					newTorrent.state			= torrentNodes[i].getElementsByTagName("i8")[0].childNodes[0].nodeValue;
-					newTorrent.bytesCompleted	= torrentNodes[i].getElementsByTagName("i8")[1].childNodes[0].nodeValue;
-					newTorrent.bytesTotal		= torrentNodes[i].getElementsByTagName("i8")[2].childNodes[0].nodeValue;
-					newTorrent.bytesRemain		= torrentNodes[i].getElementsByTagName("i8")[3].childNodes[0].nodeValue;
-					newTorrent.mb				= newTorrent.BytesTotal/1024/1024;
-					newTorrent.downRate			= torrentNodes[i].getElementsByTagName("i8")[4].childNodes[0].nodeValue;
-					newTorrent.upRate			= torrentNodes[i].getElementsByTagName("i8")[5].childNodes[0].nodeValue;
-					newTorrent.peersConnected	= torrentNodes[i].getElementsByTagName("i8")[6].childNodes[0].nodeValue;
-					newTorrent.peersNotConnected = torrentNodes[i].getElementsByTagName("i8")[7].childNodes[0].nodeValue;
-					newTorrent.peersAccounted	= torrentNodes[i].getElementsByTagName("i8")[8].childNodes[0].nodeValue;
-					newTorrent.bytesDone		= torrentNodes[i].getElementsByTagName("i8")[9].childNodes[0].nodeValue;
-					newTorrent.upTotal			= torrentNodes[i].getElementsByTagName("i8")[10].childNodes[0].nodeValue;
-					newTorrent.creationDate		= torrentNodes[i].getElementsByTagName("i8")[11].childNodes[0].nodeValue;
-					newTorrent.complete			= torrentNodes[i].getElementsByTagName("i8")[12].childNodes[0].nodeValue;
-					newTorrent.ratio			= torrentNodes[i].getElementsByTagName("i8")[13].childNodes[0].nodeValue;
-					newTorrent.isActive			= torrentNodes[i].getElementsByTagName("i8")[14].childNodes[0].nodeValue;
-					
-					self.torrents.push(newTorrent);
+					var hash = torrentNodes[i].getElementsByTagName("string")[0].childNodes[0].nodeValue;
+					// Check if this torrent has already been stored in our array (hash is unique for each)
+					aTorrent = self.getTorrent(hash);
+					if (aTorrent === null) {
+						// Torrent not found, create a new one and add it to the torrents array
+						aTorrent = new Torrent();
+						aTorrent.hash = hash;
+						self.torrents.push(aTorrent);
+					}
+					aTorrent.name				= torrentNodes[i].getElementsByTagName("string")[1].childNodes[0].nodeValue;
+					aTorrent.state				= torrentNodes[i].getElementsByTagName("i8")[0].childNodes[0].nodeValue;
+					aTorrent.bytesCompleted		= torrentNodes[i].getElementsByTagName("i8")[1].childNodes[0].nodeValue;
+					aTorrent.bytesTotal			= torrentNodes[i].getElementsByTagName("i8")[2].childNodes[0].nodeValue;
+					aTorrent.bytesRemain		= torrentNodes[i].getElementsByTagName("i8")[3].childNodes[0].nodeValue;
+					aTorrent.mb					= aTorrent.BytesTotal/1024/1024;
+					aTorrent.downRate			= torrentNodes[i].getElementsByTagName("i8")[4].childNodes[0].nodeValue;
+					aTorrent.upRate				= torrentNodes[i].getElementsByTagName("i8")[5].childNodes[0].nodeValue;
+					aTorrent.peersConnected		= torrentNodes[i].getElementsByTagName("i8")[6].childNodes[0].nodeValue;
+					aTorrent.peersNotConnected	= torrentNodes[i].getElementsByTagName("i8")[7].childNodes[0].nodeValue;
+					aTorrent.peersAccounted		= torrentNodes[i].getElementsByTagName("i8")[8].childNodes[0].nodeValue;
+					aTorrent.bytesDone			= torrentNodes[i].getElementsByTagName("i8")[9].childNodes[0].nodeValue;
+					aTorrent.upTotal			= torrentNodes[i].getElementsByTagName("i8")[10].childNodes[0].nodeValue;
+					aTorrent.creationDate		= torrentNodes[i].getElementsByTagName("i8")[11].childNodes[0].nodeValue;
+					aTorrent.isComplete			= torrentNodes[i].getElementsByTagName("i8")[12].childNodes[0].nodeValue;
+					aTorrent.ratio				= torrentNodes[i].getElementsByTagName("i8")[13].childNodes[0].nodeValue;
+					aTorrent.isActive			= torrentNodes[i].getElementsByTagName("i8")[14].childNodes[0].nodeValue;
 
-					CF.log("Active? " + newTorrent.isActive);
+					//CF.log("Active? " + aTorrent.isActive);
 				}
+				// Sort torrents by status, then name
+				self.torrents.sort(self.sortTorrents);
+
+				// Add torrents to the list
+				self.updateList();
+
 				CF.log(self.torrents.length);
 			} else if (self.lastRequest == "listMethods") {
 				CF.log("List of rTorrent XMLRPC methods:");

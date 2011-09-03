@@ -13,8 +13,8 @@ Here is a screenshot showing the ruTorrent Web GUI front end for rTorrent, using
 
 ## How do we communicate with rTorrent?
 
-This module uses the XML-RPC protocol to communicate with rTorrent:
-[rTorrent XMLRPC Reference](http://code.google.com/p/gi-torrent/wiki/rTorrent_XMLRPC_reference)
+This module uses the XML-RPC protocol to communicate with rTorrent:  
+[rTorrent XMLRPC Reference](http://code.google.com/p/gi-torrent/wiki/rTorrent_XMLRPC_reference)  
 [More details](http://libtorrent.rakshasa.no/wiki/RTorrentCommands)
 
 Communication is then sent via the SCGI protocol where rTorrent is listening.  

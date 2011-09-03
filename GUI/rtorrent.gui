@@ -15,26 +15,51 @@
     <system name="rTorrent" ip="192.168.0.250" port="5000" protocol="tcp" alwayson="1" accept="0" acceptBroadcasts="0" ssl="0" maxconnections="0" heartbeatRx="" heartbeatTx="" heartbeatMode="-1" eom="" connectionStatus="0" disconnectionStatus="0">
       <fb name="rTorrent_Incoming" regex="." />
     </system>
+    <system name="New System" ip="127.0.0.1" port="10210" protocol="tcp" alwayson="1" accept="0" acceptBroadcasts="0" ssl="0" maxconnections="0" heartbeatRx="" heartbeatTx="" heartbeatMode="-1" eom="" connectionStatus="0" disconnectionStatus="0">
+      <cmd name="Test">ID01, F04, ND01, VD{{[sliderval]::%03.0f}}</cmd>
+      <fb name="testfb" regex="(.*)">
+        <group index="1" name="" datatype="s" target="s1" />
+      </fb>
+    </system>
   </systems>
   <themes>
-    <theme type="button" name=".cfblue2_bottom[state='0']"><![CDATA[padding: 0px 19px 0px 19px; -webkit-border-image: url(bottom_btn_off.png) 0 19 0 19; text-shadow: rgba(0,0,0,0.78) 0px -1px 0px; color: White; font-size: 18px; font-family: 'Futura'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
-    <theme type="button" name=".cfblue2_bottom[state='1']"><![CDATA[padding: 0px 19px 0px 19px; -webkit-border-image: url(bottom_btn_on.png) 0 19 0 19; text-shadow: rgba(0,0,0,0.78) 0px -1px 0px; color: White; font-size: 18px; font-family: 'Futura'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="background" name=".portrait"><![CDATA[ background-image: url(bg_portrait.png); background-repeat: no-repeat;]]></theme>
+    <theme type="button" name=".btn_top[state='0']"><![CDATA[padding: 0px 4px 0px 4px; -webkit-border-image: url(btn_top_off.png) 0 4 0 4; text-shadow: rgba(0,0,0,0.39) 0px -1px 0px; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: bold; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".btn_top[state='1']"><![CDATA[padding: 0px 4px 0px 4px; -webkit-border-image: url(btn_top_on.png) 0 4 0 4; text-shadow: rgba(0,0,0,0.39) 0px -1px 0px; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: bold; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="gauge" name=".item_bg[state='0']"><![CDATA[ background-image: url(item_off.png);]]></theme>
+    <theme type="gauge" name=".item_bg[state='1']"><![CDATA[ background-image: url(item_on.png);]]></theme>
+    <theme type="text" name=".small_left"><![CDATA[ color: Black; font-size: 12px; font-family: 'Verdana'; text-align: left; vertical-align: top; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="button" name=".blank[state='0']"><![CDATA[padding: 0px 0px 0px 0px; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".blank[state='1']"><![CDATA[padding: 0px 0px 0px 0px; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="text" name=".small_right"><![CDATA[ color: Black; font-size: 14px; font-family: 'Verdana'; text-align: right; vertical-align: bottom; font-weight: normal; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".NavTitle"><![CDATA[ text-shadow: rgba(0,0,0,0.39) 0px -1px 0px; color: White; font-size: 16px; font-family: 'Verdana'; text-align: center; vertical-align: middle; font-weight: bold; font-style: none; text-decoration: none; display: table-cell;]]></theme>
   </themes>
   <scripts>
     <script name="rtorrent.js" />
     <script name="xmlrpc.js" />
   </scripts>
   <page name="Startup" j="0" transition="" subtype="" time="0" ease="">
-    <portrait />
-    <landscape>
-      <btn j="0" x="6" y="11" w="144" h="44" t="cfblue2_bottom" flip="None" sim="1" l="0" s="1" js="rTorrent.listMethods()">
-        <inactive s="0">List Methods</inactive>
-        <active s="0">List Methods</active>
+    <portrait t="portrait">
+      <list j="1" x="0" y="44" w="320" h="387" headerSub="" titleSub="" contentSub="list_item" footerSub="" orientation="v" l="0" swipedelete="0" />
+      <img x="0" y="0" w="320" h="48" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">topbar.png</img>
+      <img x="0" y="422" w="320" h="58" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">bottombar.png</img>
+      <btn j="0" x="227" y="8" w="79" h="30" t="btn_top" flip="None" sim="1" l="0" s="1" js="rTorrent.listTorrents()">
+        <inactive s="0">Refresh</inactive>
+        <active s="0">Refresh</active>
       </btn>
-      <btn j="0" x="316" y="11" w="144" h="44" t="cfblue2_bottom" flip="None" sim="1" l="0" s="1" js="rTorrent.listTorrents()">
-        <inactive s="0">List Torrents</inactive>
-        <active s="0">List Torrents</active>
-      </btn>
-    </landscape>
+      <txt j="1" x="6" y="9" w="307" h="25" t="NavTitle" wrap="False" l="0">Text</txt>
+    </portrait>
+    <landscape />
   </page>
+  <subpage name="list_item" w="320" h="60">
+    <gauge j="1" x="0" y="0" w="320" h="60" t="item_bg" l="0" />
+    <btn j="1" x="0" y="0" w="320" h="60" t="blank" flip="None" sim="0" l="0" s="1" js="rTorrent.selectTorrent(listIndex)">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <txt j="1" x="5" y="5" w="310" h="49" t="small_left" wrap="False" l="0">Torrent Name</txt>
+    <txt j="2" x="267" y="41" w="53" h="17" t="small_right" wrap="False" l="0">99.9%</txt>
+  </subpage>
 </gui>
