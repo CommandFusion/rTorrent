@@ -99,7 +99,7 @@ var CFrTorrent = function(params) {
 		for (var i = 0, t; t = self.torrents[i]; i++) {
 			CF.listAdd(self.listJoin, [{"s1": t.name, "a1": (65535/t.bytesTotal)*t.bytesCompleted, "s2": round((100/t.bytesTotal)*t.bytesCompleted, 1) + "%"}]);
 			// Hide the item notch
-			CF.setProperties({join: self.listJoin+i+":s99", y: 60, h: 0});
+			CF.setProperties({join: self.listJoin+":"+i+":s99", y: 60, h: 0});
 		}
 	};
 
