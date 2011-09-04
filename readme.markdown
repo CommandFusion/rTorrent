@@ -3,7 +3,7 @@
 ## What is rTorrent?
 
 rTorrent is a very efficient BitTorrent client for linux.  
-It has a very small memory footprint, a very customizable configuration file, and exposes it’s internals through XML-RPC.
+It has a very small memory footprint, a very customizable configuration file, and exposes it&apos;s internals through XML-RPC.
 
 rTorrent will run on NAS devices such as QNAP models.  
 See the [QNAP Forums](http://forum.qnap.com/viewtopic.php?f=146&t=45802) for more details

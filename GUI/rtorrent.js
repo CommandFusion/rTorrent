@@ -38,7 +38,8 @@ var CFrTorrent = function(params) {
 		feedbackName:	"",
 		torrents:		[],
 		lastRequest:	"",
-		incomingData:	""
+		incomingData:	"",
+		listJoin:		"",
 	};
 
 	var Torrent = function() {
@@ -90,10 +91,86 @@ var CFrTorrent = function(params) {
 	};
 
 	self.updateList = function() {
-		CF.listRemove("l1");
-		self.torrents.forEach (function(element, index, array) {
-			CF.listAdd("l1", [{"s1": element.name, "a1": (65535/element.bytesTotal)*element.bytesCompleted, "s2": round((100/element.bytesTotal)*element.bytesCompleted, 1) + "%"}]);
+		// First clear the list
+		CF.listRemove(self.listJoin);
+		// Sort torrents by status, then name
+		self.torrents.sort(self.sortTorrents);
+		// Add each item to the list
+		for (var i = 0, t; t = self.torrents[i]; i++) {
+			CF.listAdd(self.listJoin, [{"s1": t.name, "a1": (65535/t.bytesTotal)*t.bytesCompleted, "s2": round((100/t.bytesTotal)*t.bytesCompleted, 1) + "%"}]);
+			// Hide the item notch
+			CF.setProperties({join: self.listJoin+i+":s99", y: 60, h: 0});
+		}
+	};
+
+	self.selectTorrent = function(listIndex) {
+		// Get token stored in the list item to see if its expanded already or not
+		CF.getJoin(self.listJoin+":"+listIndex+":d1", function (j,v,t) {
+			if (t["expanded"] == 1) {
+				// Hide the item notch
+				CF.setProperties({join: self.listJoin+":"+listIndex+":s99", y: 60, h: 0}, 0, 0.2);
+				// Remove expanded list item for the selected torrent
+				CF.listRemove(self.listJoin, listIndex + 1, 1);
+				CF.setToken(j, "expanded", 0);
+			} else {
+				// Show the item notch
+				CF.setProperties({join: self.listJoin+":"+listIndex+":s99", y: 48, h: 12}, 0, 0.2);
+				// Insert a new list item with options for the selected torrent
+				CF.listAdd(self.listJoin, [{title: true}], listIndex + 1);
+				CF.setToken(j, "expanded", 1);
+			}
 		});
+
+	};
+
+	// Load in some fake torrent data for testing offline
+	self.fakeTorrents = function() {
+		self.torrents = [];
+		var newTorrent = new Torrent();
+		newTorrent.name = "Fake Torrent 1";
+		newTorrent.bytesCompleted = 50;
+		newTorrent.bytesTotal = 100;
+		self.torrents.push(newTorrent);
+
+		newTorrent = new Torrent();
+		newTorrent.name = "This is a really long torrent name that will split across at least 2 lines";
+		newTorrent.bytesCompleted = 100;
+		newTorrent.bytesTotal = 100;
+		newTorrent.isComplete = 1;
+		self.torrents.push(newTorrent);
+
+		newTorrent = new Torrent();
+		newTorrent.name = "Another fake torrent for good measure";
+		newTorrent.bytesCompleted = 10;
+		newTorrent.bytesTotal = 100;
+		self.torrents.push(newTorrent);
+
+		newTorrent = new Torrent();
+		newTorrent.name = "This is a torrent";
+		newTorrent.bytesCompleted = 20;
+		newTorrent.bytesTotal = 100;
+		self.torrents.push(newTorrent);
+
+		newTorrent = new Torrent();
+		newTorrent.name = "This is another torrent";
+		newTorrent.bytesCompleted = 70;
+		newTorrent.bytesTotal = 100;
+		self.torrents.push(newTorrent);
+
+		newTorrent = new Torrent();
+		newTorrent.name = "What? Another one?!?";
+		newTorrent.bytesCompleted = 0;
+		newTorrent.bytesTotal = 100;
+		self.torrents.push(newTorrent);
+
+		newTorrent = new Torrent();
+		newTorrent.name = "Last one, phew!";
+		newTorrent.bytesCompleted = 100;
+		newTorrent.bytesTotal = 100;
+		newTorrent.isComplete = 1;
+		self.torrents.push(newTorrent);
+
+		self.updateList();
 	};
 
 	self.onIncomingData = function(theSystem, matchedString) {
@@ -143,8 +220,6 @@ var CFrTorrent = function(params) {
 
 					//CF.log("Active? " + aTorrent.isActive);
 				}
-				// Sort torrents by status, then name
-				self.torrents.sort(self.sortTorrents);
 
 				// Add torrents to the list
 				self.updateList();
@@ -212,6 +287,7 @@ var CFrTorrent = function(params) {
 	self.port = parseInt(params.port) || 5000;
 	self.systemName = params.systemName || "rTorrent";
 	self.feedbackName = params.feedbackName || "rTorrent_Incoming";
+	self.listJoin = params.listJoin || "l1";
 
 	// Watch the system for feedback processing
 	CF.watch(CF.FeedbackMatchedEvent, self.systemName, self.feedbackName, self.onIncomingData);
@@ -222,4 +298,4 @@ var CFrTorrent = function(params) {
 // ======================================================================
 // Create an instance of the rTorrent object
 // ======================================================================
-var rTorrent = new CFrTorrent({address: "192.168.0.250", port: "5000", systemName: "rTorrent", feedbackName: "rTorrent_Incoming"});
+var rTorrent = new CFrTorrent({address: "192.168.0.250", port: "5000", systemName: "rTorrent", feedbackName: "rTorrent_Incoming", listJoin: "l1"});
