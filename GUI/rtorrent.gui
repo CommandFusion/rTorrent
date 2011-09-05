@@ -38,6 +38,16 @@
     <theme type="button" name=".btn_red[state='1']"><![CDATA[padding: 0px 4px 0px 4px; -webkit-border-image: url(btn_red_on.png) 0 4 0 4; text-shadow: rgba(0,0,0,0.39) 0px -1px 0px; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: bold; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
     <theme type="button" name=".btn_red_icon[state='0']"><![CDATA[padding: 0px 4px 0px 30px; -webkit-border-image: url(btn_red_off.png) 0 4 0 30; text-shadow: rgba(0,0,0,0.39) 0px -1px 0px; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: bold; font-style: none; text-decoration: none; text-align: left; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
     <theme type="button" name=".btn_red_icon[state='1']"><![CDATA[padding: 0px 4px 0px 30px; -webkit-border-image: url(btn_red_on.png) 0 4 0 30; text-shadow: rgba(0,0,0,0.39) 0px -1px 0px; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: bold; font-style: none; text-decoration: none; text-align: left; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_delete[state='0']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_delete_off.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_delete[state='1']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_delete_on.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_recheck[state='0']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_recheck_off.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_recheck[state='1']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_recheck_on.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_remove[state='0']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_remove_off.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_remove[state='1']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_remove_on.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_start[state='0']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_start_off.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_start[state='1']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_start_on.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_pause[state='0']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_pause_off.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="button" name=".action_pause[state='1']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_pause_on.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
   </themes>
   <scripts>
     <script name="rtorrent.js" />
@@ -81,13 +91,35 @@
   </subpage>
   <subpage name="list_title" w="320" h="60">
     <img x="0" y="0" w="320" h="60" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">item_expanded.png</img>
-    <btn j="0" x="234" y="15" w="79" h="30" t="btn_red_icon" flip="None" sim="1" l="0" s="1">
-      <inactive s="0">DATA<img x="7" y="7" w="14" h="15">icon_cross.png</img></inactive>
-      <active s="0">DATA<img x="7" y="7" w="14" h="15">icon_cross.png</img></active>
+    <btn j="0" x="256" y="0" w="64" h="60" t="action_delete" flip="None" sim="1" l="0" s="1" js="rTorrent.eraseTorrent(listIndex)">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
     </btn>
-    <btn j="0" x="147" y="15" w="79" h="30" t="btn_red_icon" flip="None" sim="1" l="0" s="1">
-      <inactive s="0">ITEM<img x="7" y="7" w="14" h="15">icon_cross.png</img></inactive>
-      <active s="0">ITEM<img x="7" y="7" w="14" h="15">icon_cross.png</img></active>
+    <btn j="0" x="0" y="0" w="64" h="60" t="action_start" flip="None" sim="1" l="0" s="1" js="rTorrent.startTorrent(listIndex)">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="0" x="64" y="0" w="64" h="60" t="action_pause" flip="None" sim="1" l="0" s="1" js="rTorrent.pauseTorrent(listIndex)">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="0" x="128" y="0" w="64" h="60" t="action_recheck" flip="None" sim="1" l="0" s="1" js="rTorrent.recheckTorrent(listIndex)">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="0" x="192" y="0" w="64" h="60" t="action_remove" flip="None" sim="1" l="0" s="1" js="rTorrent.removeTorrent(listIndex)">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
     </btn>
   </subpage>
 </gui>

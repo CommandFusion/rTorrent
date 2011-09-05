@@ -30,7 +30,7 @@ function round(n,dec) {
 // Global Object
 // ======================================================================
 
-var CFrTorrent = function(params) {
+var CFrTorrent = function (params) {
 	var self = {
 		address:		"",
 		port:			0,
@@ -64,7 +64,7 @@ var CFrTorrent = function(params) {
 	};
 
 	// Check if the torrent exists in the torrents array (each torrent has a unique hash)
-	self.getTorrent = function(hash) {
+	self.getTorrent = function (hash) {
 		for (var i = 0, t; t = self.torrents[i]; i++) {
 			if (t.hash === hash) {
 				return t;
@@ -74,7 +74,7 @@ var CFrTorrent = function(params) {
 	};
 
 	// Sort torrents by their status, then their name
-	self.sortTorrents = function(a,b) {
+	self.sortTorrents = function (a,b) {
 		CF.log(a.isComplete);
 		if (a.isComplete < b.isComplete) {
 			return -1;
@@ -90,20 +90,26 @@ var CFrTorrent = function(params) {
 		return 1;
 	};
 
-	self.updateList = function() {
+	self.updateList = function () {
 		// First clear the list
 		CF.listRemove(self.listJoin);
 		// Sort torrents by status, then name
 		self.torrents.sort(self.sortTorrents);
 		// Add each item to the list
 		for (var i = 0, t; t = self.torrents[i]; i++) {
-			CF.listAdd(self.listJoin, [{"s1": t.name, "a1": (65535/t.bytesTotal)*t.bytesCompleted, "s2": round((100/t.bytesTotal)*t.bytesCompleted, 1) + "%"}]);
+			CF.listAdd(self.listJoin, [{"s1": t.name, "a1": (65535/t.bytesTotal)*t.bytesCompleted, "s2": round((100/t.bytesTotal)*t.bytesCompleted, 1) + "%",
+				"d1": {
+					tokens: {
+						"hash": t.hash // Add the hash as a token so we can perform actions on the torrent later
+					}
+				}
+			}]);
 			// Hide the item notch
 			CF.setProperties({join: self.listJoin+":"+i+":s99", y: 60, h: 0});
 		}
 	};
 
-	self.selectTorrent = function(listIndex) {
+	self.selectTorrent = function (listIndex) {
 		// Get token stored in the list item to see if its expanded already or not
 		CF.getJoin(self.listJoin+":"+listIndex+":d1", function (j,v,t) {
 			if (t["expanded"] == 1) {
@@ -123,8 +129,53 @@ var CFrTorrent = function(params) {
 
 	};
 
+	self.startTorrent = function(listIndex) {
+		// Get the torrent hash from the list item above
+		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
+			self.doTorrentAction("d.start", t["hash"]);
+		});
+	};
+
+	self.pauseTorrent = function(listIndex) {
+		// Get the torrent hash from the list item above
+		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
+			self.doTorrentAction("d.pause", t["hash"]);
+		});
+	};
+
+	// Recheck the torrent hash
+	self.recheckTorrent = function(listIndex) {
+		// Get the torrent hash from the list item above
+		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
+			self.doTorrentAction("d.check_hash", t["hash"]);
+		});
+	};
+
+	// Just remove the torrent from the list (keep the files)
+	self.removeTorrent = function(listIndex) {
+		// Get the torrent hash from the list item above
+		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
+			self.doTorrentAction("d.erase", t["hash"]);
+		});
+	};
+
+	// Note this will remove the torrent and delete all files associated with it, including the downloaded data!
+	self.eraseTorrent = function(listIndex) {
+		// Get the torrent hash from the list item above
+		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
+			self.doTorrentAction("d.delete_tied", t["hash"]);
+		});
+	};
+
+	self.doTorrentAction = function (action, hash) {
+		var msg = new XMLRPCMessage(action);
+		msg.addParameter(hash);
+
+		self.buildSCGI(msg.xml(), "recheckTorrent");
+	};
+
 	// Load in some fake torrent data for testing offline
-	self.fakeTorrents = function() {
+	self.fakeTorrents = function () {
 		self.torrents = [];
 		var newTorrent = new Torrent();
 		newTorrent.name = "Fake Torrent 1";
@@ -173,7 +224,7 @@ var CFrTorrent = function(params) {
 		self.updateList();
 	};
 
-	self.onIncomingData = function(theSystem, matchedString) {
+	self.onIncomingData = function (theSystem, matchedString) {
 		//CF.log("RECIEVED: " + matchedString);
 
 		// Data can come in on multiple responses, so append until we get the full XML reply
@@ -223,8 +274,6 @@ var CFrTorrent = function(params) {
 
 				// Add torrents to the list
 				self.updateList();
-
-				CF.log(self.torrents.length);
 			} else if (self.lastRequest == "listMethods") {
 				CF.log("List of rTorrent XMLRPC methods:");
 				var methodNodes = xmlDoc.getElementsByTagName("string");
@@ -236,20 +285,14 @@ var CFrTorrent = function(params) {
 	};
 
 	// Useful to see all the XML-RPC Commands in debugger
-	self.listMethods = function() {
+	self.listMethods = function () {
 		var msg = new XMLRPCMessage("system.listMethods");
-		var netString = "CONTENT_LENGTH\x00"+msg.xml().length+"\x00SCGI\x001\x00";
-		var bodyString = netString.length+":"+netString+","+ msg.xml();
-		//CF.log(bodyString);
 
-		// Set the flag so we know what data to parse on the response
-		self.lastRequest = "listMethods";
-
-		CF.send(self.systemName, bodyString);
+		self.buildSCGI(msg.xml(), "listMethods");
 	};
 
 	// Get a list of all torrents and their status
-	self.listTorrents = function(torrentType) {
+	self.listTorrents = function (torrentType) {
 		var msg = new XMLRPCMessage("d.multicall");
 		msg.addParameter(torrentType || "main"); // Default to "main" torrent type (all torrents)
 		msg.addParameter("d.get_hash=");
@@ -272,15 +315,18 @@ var CFrTorrent = function(params) {
 		msg.addParameter("d.is_hash_checking=");
 		msg.addParameter("d.is_multi_file=");
 
-		// Use SCGI Syntax for the XML-RPC request
-		var netString = "CONTENT_LENGTH\x00"+msg.xml().length+"\x00SCGI\x001\x00";
-		var bodyString = netString.length+":"+netString+","+ msg.xml();
-		//CF.log(bodyString);
+		self.buildSCGI(msg.xml(), "listTorrents");
+	};
+	
+	// Use SCGI Syntax for the XML-RPC request
+	self.buildSCGI = function (data, requestName) {
+		var netString = "CONTENT_LENGTH\x00"+data.length+"\x00SCGI\x001\x00";
+		data = netString.length+":"+netString+","+ data;
 
 		// Set the flag so we know what data to parse on the response
-		self.lastRequest = "listTorrents";
+		self.lastRequest = requestName;
 
-		CF.send(self.systemName, bodyString);
+		CF.send(self.systemName, data);
 	};
 
 	self.address = params.address || "192.168.0.250";

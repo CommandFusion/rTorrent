@@ -24,6 +24,5 @@ Responses are returned in multiple packets, depending on the data length, append
 JavaScript can then handle all the data easily via it's built in [DOM methods](https://developer.mozilla.org/en/Gecko_DOM_Reference).
 
 ## TODO
-* Add support for starting/stopping/pausing torrents
-* Add support for removing torrents and/or their data
+* Show more information about each torrent (speeds, peers, seeds, time, etc)
 * Add support for adding new torrents via torrent URLs (not useful unless you interface with some RSS feed or something for getting the torrent URLs, but then it's best to let rTorrent parse the RSS feed automatically).
