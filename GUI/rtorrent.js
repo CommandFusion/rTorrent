@@ -10,7 +10,11 @@ LAST MOD:	Saturday, 3 September 2011
 =========================================================================
 HELP:
 
-
+Priorities:
+Off		= 0
+Low		= 1
+Normal	= 2
+High	= 3
 
 =========================================================================
 */
@@ -42,8 +46,18 @@ var CFrTorrent = function (params) {
 		listJoin:		"",
 		lastItem:		0,
 		sounds:			{
-			selectTorrent:	"d50"
-		}
+			selectTorrent:	"d50",
+			click:			"d51",
+			alert:			"d52",
+		},
+		states:			[
+			"Unknown",
+			"Seeding",
+			"Leeching",
+			"Checking",
+			"Stopped",
+			"Paused"
+		]
 	};
 
 	var Torrent = function() {
@@ -99,7 +113,19 @@ var CFrTorrent = function (params) {
 		// Sort torrents by status, then name
 		self.torrents.sort(self.sortTorrents);
 		// Add each item to the list
+		var currentState = 0;
+		var currentCompleted = false;
 		for (var i = 0, t; t = self.torrents[i]; i++) {
+			if (t.isComplete && !currentCompleted) {
+				// Insert title for completed items
+				CF.listAdd(self.listJoin, [{title: true, "s1": "Completed"}]);
+				currentCompleted = true;
+			} else if (currentState != t.state) {
+				// Insert title for new state
+				currentState = t.state;
+				CF.listAdd(self.listJoin, [{title: true, "s1": self.states[currentState]}]);
+			}
+
 			CF.listAdd(self.listJoin, [{"s1": t.name, "a1": (65535/t.bytesTotal)*t.bytesCompleted, "s2": round((100/t.bytesTotal)*t.bytesCompleted, 1) + "%",
 				"d1": {
 					tokens: {
@@ -126,11 +152,11 @@ var CFrTorrent = function (params) {
 				// Show the item notch
 				CF.setProperties({join: self.listJoin+":"+listIndex+":s99", y: 48, h: 12}, 0, 0.2);
 				// Insert a new list item with options for the selected torrent
-				CF.listAdd(self.listJoin, [{title: true}], listIndex + 1);
+				CF.listAdd(self.listJoin, [{subpage: "list_torrent_actions"}], listIndex + 1);
 				CF.setToken(j, "expanded", 1);
 				// Make sure both the selected item and the options item are fully visible
+				CF.listScroll(self.listJoin, listIndex + 1, CF.VisiblePosition, true, true);
 				CF.listScroll(self.listJoin, listIndex, CF.VisiblePosition, true, true);
-				CF.listScroll(self.listJoin, listIndex+1, CF.VisiblePosition, true, true);
 			}
 		});
 		CF.setJoin(self.sounds.selectTorrent, 1);
@@ -316,7 +342,7 @@ var CFrTorrent = function (params) {
 					aTorrent.ratio				= torrentNodes[i].getElementsByTagName("i8")[13].childNodes[0].nodeValue;
 					aTorrent.isActive			= torrentNodes[i].getElementsByTagName("i8")[14].childNodes[0].nodeValue;
 
-					//CF.log("Active? " + aTorrent.isActive);
+					CF.log("State: " + aTorrent.state);
 				}
 
 				// Add torrents to the list
