@@ -14,7 +14,10 @@ Priorities:
 Off		= 0
 Low		= 1
 Normal	= 2
-High	= 3
+High	= 
+
+Use this in the GUI XML for the list (not possible via guiDesigner yet):
+insertTransition="Top" deleteTransition="Top"
 
 =========================================================================
 */
@@ -51,12 +54,12 @@ var CFrTorrent = function (params) {
 			alert:			"d52",
 		},
 		states:			[
-			"Unknown",
-			"Seeding",
-			"Leeching",
-			"Checking",
-			"Stopped",
-			"Paused"
+			"Unknown",	// 0
+			"Seeding",	// 1
+			"Leeching",	// 2
+			"Checking",	// 3
+			"Stopped",	// 4
+			"Paused"	// 5
 		]
 	};
 
@@ -91,7 +94,7 @@ var CFrTorrent = function (params) {
 		return null;
 	};
 
-	// Sort torrents by their status, then their name
+	// Sort torrents by their state, then their name
 	self.sortTorrents = function (a,b) {
 		if (a.isComplete < b.isComplete) {
 			return -1;
@@ -115,15 +118,18 @@ var CFrTorrent = function (params) {
 		// Add each item to the list
 		var currentState = 0;
 		var currentCompleted = false;
+		var itemNum = 0;
 		for (var i = 0, t; t = self.torrents[i]; i++) {
 			if (t.isComplete && !currentCompleted) {
 				// Insert title for completed items
 				CF.listAdd(self.listJoin, [{title: true, "s1": "Completed"}]);
 				currentCompleted = true;
+				itemNum++;
 			} else if (currentState != t.state) {
 				// Insert title for new state
 				currentState = t.state;
 				CF.listAdd(self.listJoin, [{title: true, "s1": self.states[currentState]}]);
+				itemNum++;
 			}
 
 			CF.listAdd(self.listJoin, [{"s1": t.name, "a1": (65535/t.bytesTotal)*t.bytesCompleted, "s2": round((100/t.bytesTotal)*t.bytesCompleted, 1) + "%",
@@ -134,7 +140,8 @@ var CFrTorrent = function (params) {
 				}
 			}]);
 			// Hide the item notch
-			CF.setProperties({join: self.listJoin+":"+i+":s99", y: 60, h: 0});
+			CF.setProperties({join: self.listJoin+":"+itemNum+":s99", y: 60, h: 0});
+			itemNum++;
 		}
 	};
 
@@ -215,7 +222,7 @@ var CFrTorrent = function (params) {
 			self.doTorrentAction("d.erase", t["hash"]);
 			self.selectTorrent(listIndex-1);
 			self.torrents.pop(self.getTorrent(t["hash"]));
-			self.updateList();
+			CF.listRemove(self.listJoin, listIndex-1, 2);
 		});
 	};
 
@@ -229,7 +236,7 @@ var CFrTorrent = function (params) {
 			self.doTorrentAction("d.delete_tied", t["hash"]);
 			self.selectTorrent(listIndex-1);
 			self.torrents.pop(self.getTorrent(t["hash"]));
-			self.updateList();
+			CF.listRemove(self.listJoin, listIndex-1, 2);
 		});
 	};
 
@@ -315,7 +322,18 @@ var CFrTorrent = function (params) {
 				var torrentNodes = xmlDoc.getElementsByTagName("data");
 				var aTorrent = null;
 				for (var i = 1; i<torrentNodes.length; i++) {
-					var hash = torrentNodes[i].getElementsByTagName("string")[0].childNodes[0].nodeValue;
+					// Grab all string nodes
+					var stringTags = torrentNodes[i].getElementsByTagName("string");
+					// Grab all the nodes named i8 (integers?)
+					var integerTags = torrentNodes[i].getElementsByTagName("i8");
+					// Check that enough data was returned for the torrent
+					if (stringTags.length < 2 || integerTags.length < 14) {
+						// Not enough data, skip this torrent
+						CF.log("Torrent Skipped due to missing data!");
+						continue;
+					}
+
+					var hash = stringTags[0].childNodes[0].nodeValue;
 					// Check if this torrent has already been stored in our array (hash is unique for each)
 					aTorrent = self.getTorrent(hash);
 					if (aTorrent === null) {
@@ -324,23 +342,25 @@ var CFrTorrent = function (params) {
 						aTorrent.hash = hash;
 						self.torrents.push(aTorrent);
 					}
-					aTorrent.name				= torrentNodes[i].getElementsByTagName("string")[1].childNodes[0].nodeValue;
-					aTorrent.state				= torrentNodes[i].getElementsByTagName("i8")[0].childNodes[0].nodeValue;
-					aTorrent.bytesCompleted		= torrentNodes[i].getElementsByTagName("i8")[1].childNodes[0].nodeValue;
-					aTorrent.bytesTotal			= torrentNodes[i].getElementsByTagName("i8")[2].childNodes[0].nodeValue;
-					aTorrent.bytesRemain		= torrentNodes[i].getElementsByTagName("i8")[3].childNodes[0].nodeValue;
+					aTorrent.name = stringTags[1].childNodes[0].nodeValue;
+
+					// Grab data from the nodes and store in the torrent properties
+					aTorrent.state				= integerTags[0].childNodes[0].nodeValue;
+					aTorrent.bytesCompleted		= integerTags[1].childNodes[0].nodeValue;
+					aTorrent.bytesTotal			= integerTags[2].childNodes[0].nodeValue;
+					aTorrent.bytesRemain		= integerTags[3].childNodes[0].nodeValue;
 					aTorrent.mb					= aTorrent.BytesTotal/1024/1024;
-					aTorrent.downRate			= torrentNodes[i].getElementsByTagName("i8")[4].childNodes[0].nodeValue;
-					aTorrent.upRate				= torrentNodes[i].getElementsByTagName("i8")[5].childNodes[0].nodeValue;
-					aTorrent.peersConnected		= torrentNodes[i].getElementsByTagName("i8")[6].childNodes[0].nodeValue;
-					aTorrent.peersNotConnected	= torrentNodes[i].getElementsByTagName("i8")[7].childNodes[0].nodeValue;
-					aTorrent.peersAccounted		= torrentNodes[i].getElementsByTagName("i8")[8].childNodes[0].nodeValue;
-					aTorrent.bytesDone			= torrentNodes[i].getElementsByTagName("i8")[9].childNodes[0].nodeValue;
-					aTorrent.upTotal			= torrentNodes[i].getElementsByTagName("i8")[10].childNodes[0].nodeValue;
-					aTorrent.creationDate		= torrentNodes[i].getElementsByTagName("i8")[11].childNodes[0].nodeValue;
-					aTorrent.isComplete			= torrentNodes[i].getElementsByTagName("i8")[12].childNodes[0].nodeValue;
-					aTorrent.ratio				= torrentNodes[i].getElementsByTagName("i8")[13].childNodes[0].nodeValue;
-					aTorrent.isActive			= torrentNodes[i].getElementsByTagName("i8")[14].childNodes[0].nodeValue;
+					aTorrent.downRate			= integerTags[4].childNodes[0].nodeValue;
+					aTorrent.upRate				= integerTags[5].childNodes[0].nodeValue;
+					aTorrent.peersConnected		= integerTags[6].childNodes[0].nodeValue;
+					aTorrent.peersNotConnected	= integerTags[7].childNodes[0].nodeValue;
+					aTorrent.peersAccounted		= integerTags[8].childNodes[0].nodeValue;
+					aTorrent.bytesDone			= integerTags[9].childNodes[0].nodeValue;
+					aTorrent.upTotal			= integerTags[10].childNodes[0].nodeValue;
+					aTorrent.creationDate		= integerTags[11].childNodes[0].nodeValue;
+					aTorrent.isComplete			= integerTags[12].childNodes[0].nodeValue;
+					aTorrent.ratio				= integerTags[13].childNodes[0].nodeValue;
+					aTorrent.isActive			= integerTags[14].childNodes[0].nodeValue;
 
 					CF.log("State: " + aTorrent.state);
 				}

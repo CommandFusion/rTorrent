@@ -54,7 +54,7 @@
     <theme type="button" name=".action_pause[state='0']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_pause_off.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
     <theme type="button" name=".action_pause[state='1']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_pause_on.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
     <theme type="background" name=".alert"><![CDATA[ background-image: url(alert_bg.png); background-repeat: no-repeat;]]></theme>
-    <theme type="text" name=".ListTitle"><![CDATA[ text-shadow: rgba(255,255,255,0.39) 0px 1px 0px; color: #313131; font-size: 14px; font-family: 'Verdana'; text-align: left; vertical-align: middle; font-weight: bold; font-style: none; text-decoration: none; display: table-cell;]]></theme>
+    <theme type="text" name=".ListTitle"><![CDATA[ text-shadow: rgba(0,0,0,0.39) 0px 1px 0px; color: White; font-size: 14px; font-family: 'Verdana'; text-align: left; vertical-align: middle; font-weight: bold; font-style: none; text-decoration: none; display: table-cell;]]></theme>
   </themes>
   <scripts>
     <script name="rtorrent.js" />
@@ -62,7 +62,7 @@
   </scripts>
   <page name="Startup" j="0" transition="None" subtype="None" time="0" ease="">
     <portrait t="white">
-      <list j="1" x="0" y="44" w="320" h="387" headerSub="" titleSub="list_title" contentSub="list_torrent" footerSub="" orientation="v" l="0" swipedelete="0" />
+      <list j="1" x="0" y="44" w="320" h="387" headerSub="" titleSub="list_title" contentSub="list_torrent" footerSub="" orientation="v" l="0" swipedelete="0" insertTransition="Top" deleteTransition="Top" />
       <img x="0" y="0" w="320" h="48" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">topbar.png</img>
       <img x="0" y="422" w="320" h="58" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">bottombar.png</img>
       <btn j="0" x="227" y="8" w="79" h="30" t="btn_top" flip="None" sim="1" l="0" s="1" js="rTorrent.listTorrents()">
