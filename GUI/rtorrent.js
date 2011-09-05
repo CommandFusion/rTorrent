@@ -40,6 +40,10 @@ var CFrTorrent = function (params) {
 		lastRequest:	"",
 		incomingData:	"",
 		listJoin:		"",
+		lastItem:		0,
+		sounds:			{
+			selectTorrent:	"d50"
+		}
 	};
 
 	var Torrent = function() {
@@ -75,7 +79,6 @@ var CFrTorrent = function (params) {
 
 	// Sort torrents by their status, then their name
 	self.sortTorrents = function (a,b) {
-		CF.log(a.isComplete);
 		if (a.isComplete < b.isComplete) {
 			return -1;
 		} else if (a.isComplete > b.isComplete) {
@@ -109,6 +112,7 @@ var CFrTorrent = function (params) {
 		}
 	};
 
+	// Select a torrent from the list and show/hide its options
 	self.selectTorrent = function (listIndex) {
 		// Get token stored in the list item to see if its expanded already or not
 		CF.getJoin(self.listJoin+":"+listIndex+":d1", function (j,v,t) {
@@ -126,10 +130,16 @@ var CFrTorrent = function (params) {
 				CF.setToken(j, "expanded", 1);
 			}
 		});
-
+		CF.setJoin(self.sounds.selectTorrent, 1);
 	};
 
 	self.startTorrent = function(listIndex) {
+		if (listIndex === undefined) {
+			listIndex = self.lastItem;
+		}
+		if (listIndex <= 0) {
+			return;
+		}
 		// Get the torrent hash from the list item above
 		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
 			self.doTorrentAction("d.start", t["hash"]);
@@ -137,6 +147,12 @@ var CFrTorrent = function (params) {
 	};
 
 	self.pauseTorrent = function(listIndex) {
+		if (listIndex === undefined) {
+			listIndex = self.lastItem;
+		}
+		if (listIndex <= 0) {
+			return;
+		}
 		// Get the torrent hash from the list item above
 		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
 			self.doTorrentAction("d.pause", t["hash"]);
@@ -145,6 +161,12 @@ var CFrTorrent = function (params) {
 
 	// Recheck the torrent hash
 	self.recheckTorrent = function(listIndex) {
+		if (listIndex === undefined) {
+			listIndex = self.lastItem;
+		}
+		if (listIndex <= 0) {
+			return;
+		}
 		// Get the torrent hash from the list item above
 		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
 			self.doTorrentAction("d.check_hash", t["hash"]);
@@ -153,17 +175,32 @@ var CFrTorrent = function (params) {
 
 	// Just remove the torrent from the list (keep the files)
 	self.removeTorrent = function(listIndex) {
+		if (listIndex === undefined) {
+			listIndex = self.lastItem;
+		}
+		if (listIndex <= 0) {
+			return;
+		}
 		// Get the torrent hash from the list item above
 		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
 			self.doTorrentAction("d.erase", t["hash"]);
+			self.selectTorrent(listIndex-1);
+			self.torrents.pop(self.getTorrent(t["hash"]));
+			self.updateList();
 		});
 	};
 
 	// Note this will remove the torrent and delete all files associated with it, including the downloaded data!
 	self.eraseTorrent = function(listIndex) {
+		if (listIndex === undefined) {
+			listIndex = self.lastItem;
+		}
 		// Get the torrent hash from the list item above
 		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
 			self.doTorrentAction("d.delete_tied", t["hash"]);
+			self.selectTorrent(listIndex-1);
+			self.torrents.pop(self.getTorrent(t["hash"]));
+			self.updateList();
 		});
 	};
 
@@ -181,6 +218,7 @@ var CFrTorrent = function (params) {
 		newTorrent.name = "Fake Torrent 1";
 		newTorrent.bytesCompleted = 50;
 		newTorrent.bytesTotal = 100;
+		newTorrent.hash = "AAAAA";
 		self.torrents.push(newTorrent);
 
 		newTorrent = new Torrent();
@@ -188,30 +226,35 @@ var CFrTorrent = function (params) {
 		newTorrent.bytesCompleted = 100;
 		newTorrent.bytesTotal = 100;
 		newTorrent.isComplete = 1;
+		newTorrent.hash = "BBBBBB";
 		self.torrents.push(newTorrent);
 
 		newTorrent = new Torrent();
 		newTorrent.name = "Another fake torrent for good measure";
 		newTorrent.bytesCompleted = 10;
 		newTorrent.bytesTotal = 100;
+		newTorrent.hash = "CCCCCC";
 		self.torrents.push(newTorrent);
 
 		newTorrent = new Torrent();
 		newTorrent.name = "This is a torrent";
 		newTorrent.bytesCompleted = 20;
 		newTorrent.bytesTotal = 100;
+		newTorrent.hash = "DDDDDD";
 		self.torrents.push(newTorrent);
 
 		newTorrent = new Torrent();
 		newTorrent.name = "This is another torrent";
 		newTorrent.bytesCompleted = 70;
 		newTorrent.bytesTotal = 100;
+		newTorrent.hash = "EEEEEE";
 		self.torrents.push(newTorrent);
 
 		newTorrent = new Torrent();
 		newTorrent.name = "What? Another one?!?";
 		newTorrent.bytesCompleted = 0;
 		newTorrent.bytesTotal = 100;
+		newTorrent.hash = "FFFFFF";
 		self.torrents.push(newTorrent);
 
 		newTorrent = new Torrent();
@@ -219,6 +262,7 @@ var CFrTorrent = function (params) {
 		newTorrent.bytesCompleted = 100;
 		newTorrent.bytesTotal = 100;
 		newTorrent.isComplete = 1;
+		newTorrent.hash = "GGGGGG";
 		self.torrents.push(newTorrent);
 
 		self.updateList();

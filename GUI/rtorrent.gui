@@ -22,6 +22,10 @@
       </fb>
     </system>
   </systems>
+  <sounds>
+    <sound name="selectTorrent" j="50" loop="0" releasestop="0">selectTorrent.mp3</sound>
+    <sound name="buttonClick" j="0" loop="0" releasestop="0">click.mp3</sound>
+  </sounds>
   <themes>
     <theme type="background" name=".portrait_thatch"><![CDATA[ background-image: url(bg_portrait.png); background-repeat: no-repeat;]]></theme>
     <theme type="button" name=".btn_top[state='0']"><![CDATA[padding: 0px 4px 0px 4px; -webkit-border-image: url(btn_top_off.png) 0 4 0 4; text-shadow: rgba(0,0,0,0.39) 0px -1px 0px; color: White; font-size: 12px; font-family: 'Verdana'; font-weight: bold; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
@@ -48,6 +52,7 @@
     <theme type="button" name=".action_start[state='1']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_start_on.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
     <theme type="button" name=".action_pause[state='0']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_pause_off.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
     <theme type="button" name=".action_pause[state='1']"><![CDATA[padding: 0px 0px 0px 0px; background-image: url(action_pause_on.png); color: White; font-size: 12px; font-family: 'Verdana'; font-weight: normal; font-style: none; text-decoration: none; text-align: center; vertical-align: middle; display: table-cell; box-sizing: border-box; -webkit-box-sizing: border-box; -webkit-tap-highlight-color:rgba(0,0,0,0);]]></theme>
+    <theme type="background" name=".alert"><![CDATA[ background-image: url(alert_bg.png); background-repeat: no-repeat;]]></theme>
   </themes>
   <scripts>
     <script name="rtorrent.js" />
@@ -67,6 +72,8 @@
         <inactive s="0">Fake</inactive>
         <active s="0">Fake</active>
       </btn>
+      <subpage name="alert_erase" x="0" y="0" j="5" transition1="fade" subtype1="None" time1="0.1" ease1="" transition2="fade" subtype2="None" time2="0.1" ease2="" clickthrough="0" topmost="1" v="0" l="0" />
+      <subpage name="alert_remove" x="0" y="0" j="4" transition1="fade" subtype1="None" time1="0.1" ease1="" transition2="fade" subtype2="None" time2="0.1" ease2="" clickthrough="0" topmost="1" v="0" l="0" />
     </portrait>
     <landscape />
   </page>
@@ -79,7 +86,12 @@
   </page>
   <subpage name="list_item" w="320" h="60">
     <gauge j="1" x="0" y="0" w="320" h="60" t="item_bg" l="0" />
-    <btn j="1" x="0" y="0" w="320" h="60" t="blank" flip="None" sim="0" l="0" s="1" js="rTorrent.selectTorrent(listIndex)">
+    <btn j="1" x="0" y="0" w="320" h="60" t="blank" flip="None" sim="0" l="0" s="1">
+      <actions>
+        <action>
+          <release delay="0" js="rTorrent.selectTorrent(listIndex)" />
+        </action>
+      </actions>
       <inactive s="0">
       </inactive>
       <active s="0">
@@ -91,7 +103,7 @@
   </subpage>
   <subpage name="list_title" w="320" h="60">
     <img x="0" y="0" w="320" h="60" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">item_expanded.png</img>
-    <btn j="0" x="256" y="0" w="64" h="60" t="action_delete" flip="None" sim="1" l="0" s="1" js="rTorrent.eraseTorrent(listIndex)">
+    <btn j="0" x="256" y="0" w="64" h="60" t="action_delete" flip="None" sim="1" l="0" s="1" js="CF.setJoin(&quot;d5&quot;, 1); rTorrent.lastItem = listIndex;">
       <inactive s="0">
       </inactive>
       <active s="0">
@@ -115,7 +127,49 @@
       <active s="0">
       </active>
     </btn>
-    <btn j="0" x="192" y="0" w="64" h="60" t="action_remove" flip="None" sim="1" l="0" s="1" js="rTorrent.removeTorrent(listIndex)">
+    <btn j="0" x="192" y="0" w="64" h="60" t="action_remove" flip="None" sim="1" l="0" s="1" js="CF.setJoin(&quot;d4&quot;, 1); rTorrent.lastItem = listIndex;">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+  </subpage>
+  <subpage name="alert_erase" w="320" h="480" t="alert">
+    <img x="16" y="158" w="288" h="164" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">alert_erase.png</img>
+    <btn j="0" x="29" y="263" w="127" h="41" t="blank" flip="None" sim="1" l="0" s="1" js="CF.setJoin(&quot;d5&quot;, 0)">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="0" x="164" y="263" w="127" h="41" t="blank" flip="None" sim="1" l="0" s="1">
+      <actions>
+        <action>
+          <release delay="0" js="rTorrent.eraseTorrent()" />
+          <release delay="0" js="CF.setJoin(&quot;d5&quot;, 0)" />
+        </action>
+      </actions>
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+  </subpage>
+  <subpage name="alert_remove" w="320" h="480" t="alert">
+    <img x="16" y="158" w="288" h="164" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">alert_remove.png</img>
+    <btn j="0" x="29" y="263" w="127" h="41" t="blank" flip="None" sim="1" l="0" s="1" js="CF.setJoin(&quot;d4&quot;, 0)">
+      <inactive s="0">
+      </inactive>
+      <active s="0">
+      </active>
+    </btn>
+    <btn j="0" x="164" y="263" w="127" h="41" t="blank" flip="None" sim="1" l="0" s="1">
+      <actions>
+        <action>
+          <release delay="0" js="rTorrent.removeTorrent()" />
+          <release delay="0" js="CF.setJoin(&quot;d4&quot;, 0)" />
+        </action>
+      </actions>
       <inactive s="0">
       </inactive>
       <active s="0">
