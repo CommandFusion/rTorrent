@@ -128,6 +128,9 @@ var CFrTorrent = function (params) {
 				// Insert a new list item with options for the selected torrent
 				CF.listAdd(self.listJoin, [{title: true}], listIndex + 1);
 				CF.setToken(j, "expanded", 1);
+				// Make sure both the selected item and the options item are fully visible
+				CF.listScroll(self.listJoin, listIndex, CF.VisiblePosition, true, true);
+				CF.listScroll(self.listJoin, listIndex+1, CF.VisiblePosition, true, true);
 			}
 		});
 		CF.setJoin(self.sounds.selectTorrent, 1);
