@@ -301,6 +301,14 @@ var CFrTorrent = function (params) {
 		newTorrent.hash = "GGGGGG";
 		self.torrents.push(newTorrent);
 
+		newTorrent = new Torrent();
+		newTorrent.name = "TORRRRENT!";
+		newTorrent.bytesCompleted = 100;
+		newTorrent.bytesTotal = 100;
+		newTorrent.isComplete = 1;
+		newTorrent.hash = "HHHHHH";
+		self.torrents.push(newTorrent);
+
 		self.updateList();
 	};
 
