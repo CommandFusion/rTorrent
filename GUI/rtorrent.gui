@@ -62,14 +62,14 @@
   </scripts>
   <page name="Startup" j="0" transition="None" subtype="None" time="0" ease="">
     <portrait t="white">
-      <list j="1" x="0" y="44" w="320" h="387" headerSub="" titleSub="list_title" contentSub="list_torrent" footerSub="" orientation="v" l="0" swipedelete="0" insertTransition="Top" deleteTransition="Top" />
+      <list j="1" x="0" y="44" w="320" h="387" headerSub="" titleSub="list_title" contentSub="list_torrent" footerSub="" orientation="v" l="0" swipedelete="0" />
       <img x="0" y="0" w="320" h="48" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">topbar.png</img>
       <img x="0" y="422" w="320" h="58" j="0" clickthrough="0" refresh="0" l="0" noCache="0" downloadIndicator="0" clearOnURLChange="0">bottombar.png</img>
       <btn j="0" x="227" y="8" w="79" h="30" t="btn_top" flip="None" sim="1" l="0" s="1" js="rTorrent.listTorrents()">
         <inactive s="0">Refresh</inactive>
         <active s="0">Refresh</active>
       </btn>
-      <txt j="1" x="6" y="9" w="307" h="25" t="NavTitle" wrap="False" l="0">Text</txt>
+      <txt j="1" x="6" y="9" w="307" h="25" t="NavTitle" wrap="False" l="0">Torrents</txt>
       <btn j="0" x="12" y="8" w="79" h="30" t="btn_top" flip="None" sim="1" l="0" s="1" js="rTorrent.fakeTorrents()">
         <inactive s="0">Fake</inactive>
         <active s="0">Fake</active>

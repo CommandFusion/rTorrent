@@ -222,7 +222,7 @@ var CFrTorrent = function (params) {
 		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
 			self.doTorrentAction("d.erase", t["hash"]);
 			self.torrents.pop(self.getTorrent(t["hash"]));
-			self.selectTorrent(listIndex-1);
+			CF.listRemove(self.listJoin, listIndex-1, 2);
 		});
 	};
 
@@ -231,10 +231,12 @@ var CFrTorrent = function (params) {
 		if (listIndex === undefined) {
 			listIndex = self.lastItem;
 		}
+		if (listIndex <= 0) {
+			return;
+		}
 		// Get the torrent hash from the list item above
 		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
 			self.doTorrentAction("d.delete_tied", t["hash"]);
-			self.selectTorrent(listIndex-1);
 			self.torrents.pop(self.getTorrent(t["hash"]));
 			CF.listRemove(self.listJoin, listIndex-1, 2);
 		});
