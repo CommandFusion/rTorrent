@@ -119,29 +119,30 @@ var CFrTorrent = function (params) {
 		var currentState = 0;
 		var currentCompleted = false;
 		var itemNum = 0;
+		var listItems = [];
 		for (var i = 0, t; t = self.torrents[i]; i++) {
 			if (t.isComplete && !currentCompleted) {
 				// Insert title for completed items
-				CF.listAdd(self.listJoin, [{title: true, "s1": "Completed"}]);
+				listItems.push({title: true, "s1": "Completed"});
 				currentCompleted = true;
 				itemNum++;
 			} else if (currentState != t.state) {
 				// Insert title for new state
 				currentState = t.state;
-				CF.listAdd(self.listJoin, [{title: true, "s1": self.states[currentState]}]);
+				listItems.push({title: true, "s1": self.states[currentState]});
 				itemNum++;
 			}
-
-			CF.listAdd(self.listJoin, [{"s1": t.name, "a1": (65535/t.bytesTotal)*t.bytesCompleted, "s2": round((100/t.bytesTotal)*t.bytesCompleted, 1) + "%",
-				"d1": {
-					tokens: {
-						"hash": t.hash // Add the hash as a token so we can perform actions on the torrent later
-					}
-				}
-			}]);
-			// Hide the item notch
-			CF.setProperties({join: self.listJoin+":"+itemNum+":s99", y: 60, h: 0});
+			listItems.push({
+				"s1": t.name,
+				"a1": (65535 / t.bytesTotal) * t.bytesCompleted,
+				"s2": round((100 / t.bytesTotal) * t.bytesCompleted, 1) + "%",
+				"d1": { tokens: { "hash": t.hash } },	// Add the hash as a token so we can perform actions on the torrent later
+				"s99": { properties: { h: 0, y:60 } }	// hide the item notch
+			});
 			itemNum++;
+		}
+		if (listItems.length !== 0) {
+			CF.listAdd(self.listJoin, listItems);
 		}
 	};
 
