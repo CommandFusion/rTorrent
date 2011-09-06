@@ -221,9 +221,8 @@ var CFrTorrent = function (params) {
 		// Get the torrent hash from the list item above
 		CF.getJoin(self.listJoin+":"+(listIndex-1)+":d1", function (j,v,t) {
 			self.doTorrentAction("d.erase", t["hash"]);
-			self.selectTorrent(listIndex-1);
 			self.torrents.pop(self.getTorrent(t["hash"]));
-			CF.listRemove(self.listJoin, listIndex-1, 2);
+			self.selectTorrent(listIndex-1);
 		});
 	};
 
